@@ -199,6 +199,55 @@ function! s:echo(msg, hi)
   echohl None
 endfunction
 
+function! s:unset(name) abort
+  try
+    " unlet $VAR was introducted in Vim 8.0.1832, which is newer than the
+    " minimal version that vim-go supports. Set the environment variable to
+    " the empty string in that case. It's not perfect, but it will work fine
+    " for most things, and is really the best alternative that's available.
+    if !has('patch-8.0.1832')
+      call go#util#SetEnv(a:name, '')
+      return
+    endif
+
+    call execute('unlet $' . a:name)
+  catch
+    call go#util#EchoError(printf('could not unset $%s: %s', a:name, v:exception))
+  endtry
+endfunction
+
+" Make a named temporary directory which starts with "prefix".
+"
+" Unfortunately Vim's tempname() is not portable enough across various systems;
+" see: https://github.com/mattn/vim-go/pull/3#discussion_r138084911
+function! go#util#tempdir(prefix) abort
+  " See :help tempfile
+  if go#util#IsWin()
+    let l:dirs = [$TMP, $TEMP, 'c:\tmp', 'c:\temp']
+  else
+    let l:dirs = [$TMPDIR, '/tmp', './', $HOME]
+  endif
+
+  let l:dir = ''
+  for l:d in dirs
+    if !empty(l:d) && filewritable(l:d) == 2
+      let l:dir = l:d
+      break
+    endif
+  endfor
+
+  if l:dir == ''
+    call go#util#EchoError('Unable to find directory to store temporary directory in')
+    return
+  endif
+
+  " Not great randomness, but "good enough" for our purpose here.
+  let l:rnd = sha256(printf('%s%s', reltimestr(reltime()), fnamemodify(bufname(''), ":p")))
+  let l:tmp = printf("%s/%s%s", l:dir, a:prefix, l:rnd)
+  call mkdir(l:tmp, 'p', 0700)
+  return l:tmp
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

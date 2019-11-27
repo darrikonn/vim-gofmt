@@ -96,12 +96,15 @@ function! go#fmt#update_file(source, target)
   let PrevReg=getreg('"')
 
   let SourceContent=readfile(a:source)
-  normal! ggdG
-  put =SourceContent
-  normal! ggdd
+  let TargetContent=getline(1, a:target)
+  if SourceContent != TargetContent
+    normal! ggdG
+    put =SourceContent
+    normal! ggdd
 
-  " Restore the unnamed registry
-  call setreg('"', PrevReg)
+    " Restore the unnamed registry
+    call setreg('"', PrevReg)
+  endif
 endfunction
 
 " run runs the gofmt/goimport command for the given source file and returns
