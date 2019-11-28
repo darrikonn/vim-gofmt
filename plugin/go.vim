@@ -42,16 +42,12 @@ call s:checkVersion()
 " gocode-gomod) does not yet work in module aware mode.
 let s:packages = {
       \ 'asmfmt':        ['github.com/klauspost/asmfmt/cmd/asmfmt@master'],
-      \ 'errcheck':      ['github.com/kisielk/errcheck@master'],
       \ 'goimports':     ['golang.org/x/tools/cmd/goimports@master'],
-      \ 'golint':        ['golang.org/x/lint/golint@master'],
-      \ 'golangci-lint': ['github.com/golangci/golangci-lint/cmd/golangci-lint@master'],
 \ }
 
 " These commands are available on any filetypes
 command! -nargs=* -complete=customlist,s:complete GoInstallBinaries call s:GoInstallBinaries(-1, <f-args>)
 command! -nargs=* -complete=customlist,s:complete GoUpdateBinaries  call s:GoInstallBinaries(1, <f-args>)
-command! -nargs=? -complete=dir GoPath call go#path#GoPath(<f-args>)
 
 fun! s:complete(lead, cmdline, cursor)
   return filter(keys(s:packages), 'strpart(v:val, 0, len(a:lead)) == a:lead')
