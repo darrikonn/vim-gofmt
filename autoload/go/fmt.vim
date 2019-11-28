@@ -93,17 +93,17 @@ endfunction
 " update_file updates the target file with the given formatted source
 function! go#fmt#update_file(source, target)
   " Store the unnamed registry
-  let PrevReg=getreg('"')
+  let prev_reg=getreg('"')
 
-  let SourceContent=readfile(a:source)
-  let TargetContent=getline(1, a:target)
-  if SourceContent != TargetContent
+  let source_content=readfile(a:source)
+  let target_content=getline(1, a:target)
+  if source_content != target_content
     normal! ggdG
-    put =SourceContent
+    put =source_content
     normal! ggdd
 
     " Restore the unnamed registry
-    call setreg('"', PrevReg)
+    call setreg('"', prev_reg)
   endif
 endfunction
 
