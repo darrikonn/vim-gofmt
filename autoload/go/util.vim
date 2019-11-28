@@ -248,6 +248,10 @@ function! go#util#tempdir(prefix) abort
   return l:tmp
 endfunction
 
+function! go#util#EchoError(msg)
+  call s:echo(a:msg, 'ErrorMsg')
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

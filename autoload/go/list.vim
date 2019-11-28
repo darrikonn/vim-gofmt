@@ -79,6 +79,20 @@ function! go#list#Window(listtype, ...) abort
   endif
 endfunction
 
+" Close closes the location list
+function! go#list#Close(listtype) abort
+  let autoclose_window = go#config#ListAutoclose()
+  if !autoclose_window
+    return
+  endif
+
+  if a:listtype == "locationlist"
+    lclose
+  else
+    cclose
+  endif
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save

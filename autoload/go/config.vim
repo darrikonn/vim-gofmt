@@ -46,6 +46,10 @@ function! go#config#ListHeight() abort
   return get(g:, "go_list_height", 0)
 endfunction
 
+function! go#config#ListAutoclose() abort
+  return get(g:, 'go_list_autoclose', 1)
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
