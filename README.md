@@ -19,15 +19,15 @@ This plugin adds Go language support for Vim, with the following main features:
 
 ## Install
 
-vim-go requires at least Vim 8.0.1453 or Neovim 0.3.1.
+vim-gofmt requires at least Vim 8.0.1453 or Neovim 0.3.1.
 
-vim-go follows the standard runtime path structure. Below are some helper lines
+vim-gofmt follows the standard runtime path structure. Below are some helper lines
 for popular package managers:
 
 * [Vim 8 packages](http://vimhelp.appspot.com/repeat.txt.html#packages)
-  * `git clone https://github.com/darrikonn/vim-gofmt.git ~/.vim/pack/plugins/start/vim-go`
+  * `git clone https://github.com/darrikonn/vim-gofmt.git ~/.vim/pack/plugins/start/vim-gofmt`
 * [Pathogen](https://github.com/tpope/vim-pathogen)
-  * `git clone https://github.com/darrikonn/vim-gofmt.git ~/.vim/bundle/vim-go`
+  * `git clone https://github.com/darrikonn/vim-gofmt.git ~/.vim/bundle/vim-gofmt`
 * [vim-plug](https://github.com/junegunn/vim-plug)
   * `Plug 'darrikonn/vim-gofmt', { 'do': ':GoUpdateBinaries' }`
 * [Vundle](https://github.com/VundleVim/Vundle.vim)
