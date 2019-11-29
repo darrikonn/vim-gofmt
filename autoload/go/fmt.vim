@@ -62,7 +62,7 @@ function! go#fmt#Format(withGoimport) abort
   let diff_offset = len(readfile(l:tmpname)) - line('$')
 
   if l:err == 0
-    call go#fmt#update_file(l:tmpname, expand('%'))
+    call go#fmt#update_file(l:tmpname)
   elseif !go#config#FmtFailSilently()
     let errors = s:parse_errors(expand('%'), out)
     call s:show_errors(errors)
@@ -91,12 +91,13 @@ function! go#fmt#Format(withGoimport) abort
 endfunction
 
 " update_file updates the target file with the given formatted source
-function! go#fmt#update_file(source, target)
+function! go#fmt#update_file(source)
   " Store the unnamed registry
   let prev_reg=getreg('"')
+  let start_time = reltime()
 
   let source_content=readfile(a:source)
-  let target_content=getline(1, a:target)
+  let target_content=getline(1, "$")
   if source_content != target_content
     normal! ggdG
     put =source_content
@@ -104,6 +105,9 @@ function! go#fmt#update_file(source, target)
 
     " Restore the unnamed registry
     call setreg('"', prev_reg)
+    echo "Reformatted in" split(reltimestr(reltime(start_time)))[0]. "s."
+  else
+    echo "Already well formatted, good job. (took" split(reltimestr(reltime(start_time)))[0] . "s)"
   endif
 endfunction
 
