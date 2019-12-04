@@ -9,24 +9,8 @@
 let s:cpo_save = &cpo
 set cpo&vim
 
-"  we have those problems :
-"  http://stackoverflow.com/questions/12741977/prevent-vim-from-updating-its-undo-tree
-"  http://stackoverflow.com/questions/18532692/golang-formatter-and-vim-how-to-destroy-history-record?rq=1
-"
-"  The below function is an improved version that aims to fix all problems.
-"  it doesn't undo changes and break undo history.  If you are here reading
-"  this and have VimL experience, please look at the function for
-"  improvements, patches are welcome :)
 function! go#fmt#Format(withGoimport) abort
   if go#config#FmtExperimental()
-    " Using winsaveview to save/restore cursor state has the problem of
-    " closing folds on save:
-    "   https://github.com/fatih/vim-go/issues/502
-    " One fix is to use mkview instead. Unfortunately, this sometimes causes
-    " other bad side effects:
-    "   https://github.com/fatih/vim-go/issues/728
-    " and still closes all folds if foldlevel>0:
-    "   https://github.com/fatih/vim-go/issues/732
     let l:curw = {}
     try
       mkview!
@@ -62,7 +46,7 @@ function! go#fmt#Format(withGoimport) abort
   let diff_offset = len(readfile(l:tmpname)) - line('$')
 
   if l:err == 0
-    call go#fmt#update_file(l:tmpname)
+    call go#fmt#update_file(l:tmpname, a:withGoimport)
   elseif !go#config#FmtFailSilently()
     let errors = s:parse_errors(expand('%'), out)
     call s:show_errors(errors)
@@ -91,7 +75,7 @@ function! go#fmt#Format(withGoimport) abort
 endfunction
 
 " update_file updates the target file with the given formatted source
-function! go#fmt#update_file(source)
+function! go#fmt#update_file(source, sort_imports)
   " Store the unnamed registry
   let prev_reg=getreg('"')
   let start_time = reltime()
@@ -105,9 +89,14 @@ function! go#fmt#update_file(source)
 
     " Restore the unnamed registry
     call setreg('"', prev_reg)
-    echo "Reformatted in" split(reltimestr(reltime(start_time)))[0]. "s."
+
+    if a:sort_imports == -1
+      echom "Reformatted in" split(reltimestr(reltime(start_time)))[0]. "s."
+    endif
   else
-    echo "Already well formatted, good job. (took" split(reltimestr(reltime(start_time)))[0] . "s)"
+    if a:sort_imports == -1
+      echom "Already well formatted, good job. (took" split(reltimestr(reltime(start_time)))[0] . "s)"
+    endif
   endif
 endfunction
 
