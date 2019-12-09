@@ -252,6 +252,37 @@ function! go#util#EchoError(msg)
   call s:echo(a:msg, 'ErrorMsg')
 endfunction
 
+let s:env_cache = {}
+
+" env returns the go environment variable for the given key. Where key can be
+" GOARCH, GOOS, GOROOT, etc... It caches the result and returns the cached
+" version.
+function! go#util#env(key) abort
+  let l:key = tolower(a:key)
+  if has_key(s:env_cache, l:key)
+    return s:env_cache[l:key]
+  endif
+
+  if executable('go')
+    let l:var = call('go#util#'.l:key, [])
+    if go#util#ShellError() != 0
+      call go#util#EchoError(printf("'go env %s' failed", toupper(l:key)))
+      return ''
+    endif
+  else
+    let l:var = eval("$".toupper(a:key))
+  endif
+
+  let s:env_cache[l:key] = l:var
+  return l:var
+endfunction
+
+" gopath returns 'go env GOPATH'. This is an internal function and shouldn't
+" be used. Instead use 'go#util#env("gopath")'
+function! go#util#gopath() abort
+  return substitute(s:exec(['go', 'env', 'GOPATH'])[0], '\n', '', 'g')
+endfunction
+
 " restore Vi compatibility settings
 let &cpo = s:cpo_save
 unlet s:cpo_save
