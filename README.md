@@ -1,4 +1,4 @@
-# vim-gofmt
+<h1 align="center">vim-gofmt</h1>
 
 <h3 align="center">NOTE</h3>
 <p align="center">The contents of this repo are pure copy-paste from the awesome <a href="https://github.com/fatih/vim-go">vim-go</a> repo.</p>
