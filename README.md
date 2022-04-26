@@ -35,7 +35,7 @@ for popular package managers:
 
 You will also need to install all the necessary binaries. vim-gofmt makes it easy
 to install all of them by providing a command, `:GoInstallBinaries`, which will
-`go get` all the required binaries.
+`go install` all the required binaries.
 
 ## Usage
 
